@@ -103,13 +103,13 @@ export default {
           value: 'Gansu',
           label: '甘肃'
         }, {
-          value: 'Shanxi',
+          value: 'Shanxi1',
           label: '山西'
         }, {
           value: 'Neimenggu',
           label: '内蒙古'
         }, {
-          value: 'Shanxi',
+          value: 'Shanxi2',
           label: '陕西'
         }, {
           value: 'Jilin',
