@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="value7" placeholder="请选择省份" id="city">
+  <el-select v-model="value7" placeholder="请选择省份" id="city" @change="setCity">
     <el-option-group
       v-for="group in options3"
       :key="group.label"
@@ -17,6 +17,11 @@
 <script type="text/ecmascript-6">
 export default {
   name: 'CitySelector',
+  methods: {
+    setCity: function () {
+      this.$emit('changeCity', this.value7)
+    }
+  },
   data () {
     return {
       options3: [{
@@ -85,7 +90,7 @@ export default {
           value: 'Anhui',
           label: '安徽'
         }, {
-          value: 'Shangdong',
+          value: 'Shandong',
           label: '山东'
         }, {
           value: 'Xinjiang',
