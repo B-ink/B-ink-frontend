@@ -17,7 +17,7 @@
 
 <style lang="stylus">
   .login
-    margin-top 50%
+    padding-top 50%
     .btn, .input
       display block
       margin 20px auto
