@@ -9,7 +9,7 @@
                 <CitySelector @changeCity="getCity"></CitySelector>
               </el-form-item>
             </el-form>
-            <svg class="icon" aria-hidden="true" style="position: fixed; bottom: 0px; font-size: 40px; left: 45%;"><use xlink:href="#icon-xiayi"></use></svg>
+            <svg class="icon" aria-hidden="true" style="position: fixed; bottom: 0px; font-size: 40px; left: 45%;" id="moveIcon"><use xlink:href="#icon-xiayi"></use></svg>
           </swiper-slide>
           <swiper-slide style="height: 100%">
             <el-form label-width="80px" label-position="left">
@@ -145,7 +145,18 @@ export default {
         setWrapperSize: true,
         autoHeight: true,
         mousewheelControl: true,
-        observeParents: true
+        observeParents: true,
+        on: {
+          touchMove: function () {
+            var temp = document.getElementById('moveIcon')
+            if (Math.abs(this.translate) > (this.height * 1.0) / 2) {
+              console.log('inside')
+              temp.style.transform = 'rotate(180deg)'
+            } else {
+              temp.style.transform = ''
+            }
+          }
+        }
       },
       wallOptions: [{value: '乳胶漆墙面'}, {value: '壁纸墙面'}, {value: '硅藻泥墙面'}, {value: '其他'}],
       floorOptions: [{value: '木地板'}, {value: '瓷砖'}, {value: '其他'}],
