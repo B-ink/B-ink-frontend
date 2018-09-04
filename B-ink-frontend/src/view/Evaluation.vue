@@ -1,7 +1,7 @@
 <template>
   <el-container :direction="vertical" style="height: 100%">
     <el-container>
-      <div id="risk-form" style="width: 100%">
+      <div id="risk-form" style="width: 100%; height:100%">
         <swiper :options="swiperOption" style="height: 100%; width: 100%">
           <swiper-slide style="height: 100%">
             <el-form>
@@ -35,26 +35,6 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="板材">
-                <el-select v-model="value3" placeholder="请选择">
-                  <el-option
-                    v-for="item in panelOptions"
-                    :key="item.value"
-                    :label="item.value"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="涂料">
-                <el-select v-model="value4" placeholder="请选择">
-                  <el-option
-                    v-for="item in paintOptions"
-                    :key="item.value"
-                    :label="item.value"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
               </div>
               <div v-show="check2">
               <div class="title"><svg class="icon" aria-hidden="true" style="font-size: 25px; margin-right: 5px"><use xlink:href="#icon-dizhen"></use> </svg>地震评估</div>
@@ -71,6 +51,26 @@
               </div>
               <div>
               <div class="title"><svg class="icon" aria-hidden="true" style="font-size: 25px; margin-right: 5px"><use xlink:href="#icon-huozai"></use> </svg>火灾评估</div>
+                <el-form-item label="板材">
+                  <el-select v-model="value3" placeholder="请选择">
+                    <el-option
+                      v-for="item in panelOptions"
+                      :key="item.value"
+                      :label="item.value"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="涂料">
+                  <el-select v-model="value4" placeholder="请选择">
+                    <el-option
+                      v-for="item in paintOptions"
+                      :key="item.value"
+                      :label="item.value"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               <el-form-item label="消防设施">
                 <el-radio-group v-model="radio1">
                   <el-radio
@@ -83,10 +83,21 @@
                 </el-radio-group>
               </el-form-item>
               </div>
+              <el-form-item style="position: absolute; bottom: 10%; width: 100%">
+                <el-button round style="position:absolute;right:5%" @click="startEvaluation">开始评估</el-button>
+              </el-form-item>
             </el-form>
           </swiper-slide>
         </swiper>
       </div>
+      <x-dialog :show.sync="showDialog" class="dialog-demo">
+        <div class="img-box">
+          <Countup :start-val="0" :end-val="this.finalPoint" :duration="10" :start="startCount"></Countup>
+        </div>
+        <div @click="clickClose">
+          <span class="vux-close"></span>
+        </div>
+      </x-dialog>
     </el-container>
   </el-container>
 </template>
@@ -99,6 +110,7 @@ import CitySelector from '../components/CitySelector.vue'
 import ElHeader from 'element-ui/packages/header/src/main'
 import 'swiper/dist/css/swiper.css'
 import {swiper, swiperSlide} from 'vue-awesome-swiper'
+import {XDialog, Countup} from 'vux'
 
 export default {
   components: {
@@ -108,20 +120,62 @@ export default {
     ElAside,
     CitySelector,
     swiper,
-    swiperSlide
+    swiperSlide,
+    XDialog,
+    Countup
   },
   name: 'Evaluation',
   methods: {
     getCity (msg) {
       this.value6 = msg
+    },
+    startEvaluation () {
+      console.log(this.finalPoint)
+      this.showDialog = true
+      this.startCount = true
+    },
+    clickClose () {
+      this.showDialog = false
+      this.startCount = false
     }
   },
   watch: {
     value6: function (newValue, oldValue) {
+      this.rainstormPoint = 0
+      this.acidRainPoint = 0
+      this.typhoonPoint = 0
+      this.stormTidePoint = 0
+      this.floodPoint = 0
+      this.earthquakePoint = 0
+      this.value1 = ''
+      this.value2 = ''
+      this.value3 = ''
+      this.value4 = ''
+      this.value5 = ''
+      this.radio1 = ''
+      this.finalPoint = 100
       if (newValue === 'Beijing' || newValue === 'Liaoning' || newValue === 'Shandong' || newValue === 'Guangdong' || newValue === 'Guangxi' || newValue === 'Fujian' ||
         newValue === 'Zhejiang' || newValue === 'Taiwan' || newValue === 'Xianggang' || newValue === 'Aomen' || newValue === 'Heilongjiang' || newValue === 'Hebei' ||
         newValue === 'Shanxi1' || newValue === 'Henan' || newValue === 'Jiangxi' || newValue === 'Neimenggu' || newValue === 'Gansu' || newValue === 'Shanxi2' ||
-        newValue === 'Hunan' || newValue === 'Hainan' || newValue === 'Jilin' || newValue === 'Jiangsu' || newValue === 'Hubei') {
+        newValue === 'Hunan') {
+        this.rainstormPoint = this.rainstormPoint + 20
+      }
+      if (newValue === 'Sichuan' || newValue === 'Chongqing' || newValue === 'Guizhou' || newValue === 'Hunan' || newValue === 'Hubei' || newValue === 'Jiangxi' ||
+        newValue === 'Fujian' || newValue === 'Guangdong' || newValue === 'Wuhan') {
+        this.acidRainPoint = this.acidRainPoint + 20
+      }
+      if (newValue === 'Guangdong' || newValue === 'Hainan' || newValue === 'Fujian' || newValue === 'Zhejiang' || newValue === 'Taiwan') {
+        this.typhoonPoint = this.typhoonPoint + 30
+      }
+      if (newValue === 'Zhejiang' || newValue === 'Fujian' || newValue === 'Guangdong') {
+        this.stormTidePoint = this.stormTidePoint + 30
+      }
+      if (newValue === 'Neimenggu' || newValue === 'Jilin' || newValue === 'Liaoning' || newValue === 'Hebei' || newValue === 'Henan' || newValue === 'Shandong' ||
+        newValue === 'Jiangsu' || newValue === 'Anhui' || newValue === 'Qinghai' || newValue === 'Xizang' || newValue === 'Xinjiang' || newValue === 'Gansu' ||
+        newValue === 'Ningxia' || newValue === 'Sichuan' || newValue === 'Yunnan' || newValue === 'Hainan') {
+        this.floodPoint = this.floodPoint + 35
+      }
+      if (this.rainstormPoint + this.typhoonPoint + this.floodPoint > 0) {
         this.check1 = true
       } else {
         this.check1 = false
@@ -130,8 +184,82 @@ export default {
         newValue === 'Ningxia' || newValue === 'Neimenggu' || newValue === 'Jiangsu' || newValue === 'Anhui' || newValue === 'Qinghai' || newValue === 'Xizang' ||
         newValue === 'Xinjiang' || newValue === 'Gansu' || newValue === 'Sichuan' || newValue === 'Yunnan' || newValue === 'Hainan') {
         this.check2 = true
+        this.earthquakePoint = this.earthquakePoint + 35
       } else {
         this.check2 = false
+      }
+      this.finalPoint = this.finalPoint + this.floodPoint + this.typhoonPoint + this.rainstormPoint + this.earthquakePoint + this.stormTidePoint + this.acidRainPoint
+    },
+    value1: function (newValue, oldValue) {
+      if (newValue === '乳胶漆墙面') {
+        this.finalPoint = this.finalPoint + 20
+      } else if (newValue === '壁纸墙面') {
+        this.finalPoint = this.finalPoint - 5
+      } else if (newValue === '硅藻泥墙面') {
+        this.finalPoint = this.finalPoint - 10
+      }
+      if (oldValue === '乳胶漆墙面') {
+        this.finalPoint = this.finalPoint - 20
+      } else if (oldValue === '壁纸墙面') {
+        this.finalPoint = this.finalPoint + 5
+      } else if (oldValue === '硅藻泥墙面') {
+        this.finalPoint = this.finalPoint + 10
+      }
+    },
+    value2: function (newValue, oldValue) {
+      if (newValue === '木地板') {
+        this.finalPoint = this.finalPoint + 10
+      } else if (newValue === '瓷砖') {
+        this.finalPoint = this.finalPoint - 5
+      }
+      if (oldValue === '木地板') {
+        this.finalPoint = this.finalPoint - 10
+      } else if (oldValue === '瓷砖') {
+        this.finalPoint = this.finalPoint + 5
+      }
+    },
+    value3: function (newValue, oldValue) {
+      if (newValue === '实木板') {
+        this.finalPoint = this.finalPoint + 40
+      } else if (newValue === '人造板') {
+        this.finalPoint = this.finalPoint - 10
+      }
+      if (oldValue === '实木板') {
+        this.finalPoint = this.finalPoint - 40
+      } else if (oldValue === '人造板') {
+        this.finalPoint = this.finalPoint + 10
+      }
+    },
+    value4: function (newValue, oldValue) {
+      if (newValue === '水性漆') {
+        this.finalPoint = this.finalPoint - 20
+      } else if (newValue === '油性漆') {
+        this.finalPoint = this.finalPoint - 5
+      }
+      if (oldValue === '水性漆') {
+        this.finalPoint = this.finalPoint + 20
+      } else if (oldValue === '油性漆') {
+        this.finalPoint = this.finalPoint + 5
+      }
+    },
+    value5: function (newValue, oldValue) {
+      if (newValue === '砖石') {
+        this.finalPoint = this.finalPoint + 30
+      }
+      if (oldValue === '砖石') {
+        this.finalPoint = this.finalPoint - 30
+      }
+    },
+    radio1: function (newValue, oldValue) {
+      if (newValue === '家中备有灭火器等设备') {
+        this.finalPoint = this.finalPoint - 20
+      } else if (newValue === '未备有灭火器等设备') {
+        this.finalPoint = this.finalPoint + 10
+      }
+      if (oldValue === '家中备有灭火器等设备') {
+        this.finalPoint = this.finalPoint + 20
+      } else if (oldValue === '未备有灭火器等设备') {
+        this.finalPoint = this.finalPoint - 10
       }
     }
   },
@@ -150,7 +278,6 @@ export default {
           touchMove: function () {
             var temp = document.getElementById('moveIcon')
             if (Math.abs(this.translate) > (this.height * 1.0) / 2) {
-              console.log('inside')
               temp.style.transform = 'rotate(180deg)'
             } else {
               temp.style.transform = ''
@@ -172,13 +299,23 @@ export default {
       value6: '',
       radio1: '',
       check1: true,
-      check2: true
+      check2: true,
+      rainstormPoint: 0,
+      acidRainPoint: 0,
+      typhoonPoint: 0,
+      stormTidePoint: 0,
+      floodPoint: 0,
+      earthquakePoint: 0,
+      finalPoint: 100,
+      showDialog: false,
+      startCount: false
     }
   }
 }
 </script>
 
 <style lang="stylus">
+  @import "~vux/src/styles/close"
   #risk-form
     margin 10px
 
@@ -187,4 +324,21 @@ export default {
 
   .title
     margin 30px 0 15px 0
+
+  .dialog-demo
+    .weui-dialog
+      border-radius: 8px
+      padding-bottom: 8px
+    .dialog-title
+      //line-height: 30px
+      //color: #666
+    .img-box
+      height: 80%
+      overflow: hidden
+      font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif
+      font-size: 5em
+      color: #409EFF
+    .vux-close
+      margin-top: 2px
+      margin-bottom: 2px
 </style>
