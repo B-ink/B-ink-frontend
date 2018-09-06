@@ -7,6 +7,7 @@ import ElementUI from 'element-ui'
 import '../node_modules/element-ui/lib/theme-chalk/index.css'
 import VueTouch from '../node_modules/vue-touch'
 // import echarts from '../node_modules/echarts'
+import Application from './js/app'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 
 Vue.use(ElementUI)
@@ -18,6 +19,9 @@ Vue.use(VueAwesomeSwiper)
 new Vue({
   el: '#app',
   router,
+  created: function () {
+    Application.init();
+  },
   components: { App },
   template: '<App/>'
 })
