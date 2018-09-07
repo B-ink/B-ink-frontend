@@ -1,18 +1,22 @@
 <template>
-  <div class='my-insurance' style="padding: 20px">
+  <div class='my-insurance'>
     <div style="font-size: 30px; margin-bottom: 15px;">我的保单</div>
     <div v-for="(insurance, key) in insurances" :key="key"
-         style="padding-bottom: 20px; margin: 20px 0; border-bottom: 1px solid rgba(7,17,27,0.1)">
-      <div v-if="insurance.city !== ''" class="line">城市: {{getCity(insurance.city)}}</div>
-      <div v-if="insurance.wall !== ''" class="line">墙面: {{insurance.wall}}</div>
-      <div v-if="insurance.floor !== ''" class="line">地板: {{insurance.floor}}</div>
-      <div v-if="insurance.bar !== ''" class="line">板材: {{insurance.bar}}</div>
-      <div v-if="insurance.paint !== ''" class="line">涂料: {{insurance.paint}}</div>
-      <div v-if="insurance.stone !== ''" class="line">建筑材料: {{insurance.stone}}</div>
-      <div v-if="insurance.radio1 !== ''" class="line">防火设施: {{insurance.radio1}}</div>
-      <div class="line">投保时间: {{insurance.time}}</div>
-      <div class="line">保险额度: ￥{{Number(insurance.money)}}</div>
-      <div class="line">保险费: ￥{{Number(insurance.expense)}}</div>
+         style="background-color: #fff;padding: 20px; margin: 20px 0;">
+      <div>
+        <div v-if="insurance.city !== ''" class="line"><span class="label">城市  </span>{{getCity(insurance.city)}}</div>
+        <div v-if="insurance.wall !== ''" class="line"><span class="label">墙面</span>  {{insurance.wall}}</div>
+        <div v-if="insurance.floor !== ''" class="line"><span class="label">地板</span>  {{insurance.floor}}</div>
+        <div v-if="insurance.bar !== ''" class="line"><span class="label">板材</span>  {{insurance.bar}}</div>
+        <div v-if="insurance.paint !== ''" class="line"><span class="label">涂料</span>  {{insurance.paint}}</div>
+        <div v-if="insurance.stone !== ''" class="line"><span class="label">建筑材料</span>  {{insurance.stone}}</div>
+        <div v-if="insurance.radio1 !== ''" class="line"><span class="label">防火设施</span>  {{insurance.radio1}}</div>
+      </div>
+      <div>
+        <div class="line">投保时间: {{insurance.time}}</div>
+        <div class="line">保险额度: ￥{{Number(insurance.money)}}</div>
+        <div class="line">保险费: ￥{{Number(insurance.expense)}}</div>
+      </div>
     </div>
     <div v-if="insurances.length === 0">您还没有保单</div>
   </div>
@@ -199,6 +203,13 @@
 </script>
 
 <style lang="stylus">
-  .line
-    margin 3px 0
+  .my-insurance
+    background-color #f5f7f9
+    padding 20px
+    box-sizing border-box
+    height: 100%
+    .line
+      margin 3px 0
+      .label
+        color: #999
 </style>
