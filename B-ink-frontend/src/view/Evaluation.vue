@@ -1,5 +1,5 @@
 <template>
-  <el-container :direction="vertical" style="height: 100%">
+  <el-container direction="vertical" style="height: 100%">
     <el-container>
       <div id="risk-form" style="width: 100%; height:100%">
         <swiper :options="swiperOption" style="height: 100%; width: 100%">
@@ -29,7 +29,7 @@
                     浸水评估
                   </div>
                   <el-form-item label="墙面">
-                    <el-select v-model="value1" placeholder="请选择">
+                    <el-select v-model="wall" placeholder="请选择">
                       <el-option
                         v-for="item in wallOptions"
                         :key="item.value"
@@ -39,7 +39,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="地板">
-                    <el-select v-model="value2" placeholder="请选择">
+                    <el-select v-model="floor" placeholder="请选择">
                       <el-option
                         v-for="item in floorOptions"
                         :key="item.value"
@@ -57,7 +57,7 @@
                     地震评估
                   </div>
                   <el-form-item label="建筑材料">
-                    <el-select v-model="value5" placeholder="请选择">
+                    <el-select v-model="stone" placeholder="请选择">
                       <el-option
                         v-for="item in materials"
                         :key="item.value"
@@ -75,7 +75,7 @@
                     火灾评估
                   </div>
                   <el-form-item label="板材">
-                    <el-select v-model="value3" placeholder="请选择">
+                    <el-select v-model="bar" placeholder="请选择">
                       <el-option
                         v-for="item in panelOptions"
                         :key="item.value"
@@ -85,7 +85,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="涂料">
-                    <el-select v-model="value4" placeholder="请选择">
+                    <el-select v-model="paint" placeholder="请选择">
                       <el-option
                         v-for="item in paintOptions"
                         :key="item.value"
@@ -106,8 +106,8 @@
                     </el-radio-group>
                   </el-form-item>
                 </div>
-                <el-form-item style="position: absolute; bottom: 10%; width: 100%; right: 10px">
-                  <el-button round style="position:absolute;right:5%" @click="startEvaluation">开始评估</el-button>
+                <el-form-item style="position: absolute; top: 64%; width: 100%; right: 10px">
+                  <el-button type="primary" style="position:absolute;right:5%" @click="startEvaluation">开始评估</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -115,11 +115,17 @@
         </swiper>
       </div>
       <x-dialog :show.sync="showDialog" class="dialog-demo" style="padding: 10px; height: 100%;">
-        <div class="img-box" style="font-size: 48px; height: 80px">
-          <Countup :start-val="0" :end-val="this.finalPoint" :duration="10" :start="startCount"></Countup>
+        <div class="img-box" style="font-size: 48px; height: 80px; color: #409EFF;">
+          {{this.finalPoint}}
+          <!--<Countup :start-val="0" :end-val="this.finalPoint" :duration="10" :start="startCount"></Countup>-->
+        </div>
+        <div style="padding: 0 20px; margin-bottom: 20px">
+          <el-input type="number" placeholder="请输入保险金额" style="margin-bottom: 10px" v-model="money"></el-input>
+          <div>{{`您的费率是${getFee * 100}%`}}</div>
+          <div>{{`保险费是${Number((this.money * getFee).toPrecision(9))}元`}}</div>
         </div>
         <el-button @click="clickClose">我再想想</el-button>
-        <el-button @click="clickConfirm" type="primary">我要投保</el-button>
+        <el-button @click="clickConfirm" type="primary" v-if="this.finalPoint <= 400">我要投保</el-button>
       </x-dialog>
     </el-container>
   </el-container>
@@ -134,6 +140,7 @@
   import 'swiper/dist/css/swiper.css'
   import {swiper, swiperSlide} from 'vue-awesome-swiper'
   import {XDialog, Countup} from 'vux'
+  import Application from '../js/app'
 
   export default {
     components: {
@@ -148,36 +155,94 @@
       Countup
     },
     name: 'Evaluation',
+    computed: {
+      getFee () {
+        if (this.finalPoint < 70) {
+          return 0.0005;
+        } else if (this.finalPoint <= 120) {
+          return 0.00052;
+        } else if (this.finalPoint <= 200) {
+          return 0.00055;
+        } else if (this.finalPoint <= 400) {
+          return 0.00058;
+        }
+      }
+    },
     methods: {
       getCity (msg) {
-        this.value6 = msg
+        this.city = msg
       },
       startEvaluation () {
-        console.log(this.finalPoint)
-        this.showDialog = true
-        this.startCount = true
+        if (this._validate()) {
+          this.showDialog = true
+          this.startCount = true
+        } else {
+          this.$message.error('您还有未填写的项目，请仔细检查，填写完整！');
+        }
       },
       clickClose () {
         this.showDialog = false
         this.startCount = false
       },
+      _validate () {
+        if (this.city === '') {
+          console.log('die city')
+          return false;
+        } else {
+          if (this.check1) {
+            if (!(this.wall !== '' && this.floor !== '')) {
+              console.log('die check1')
+              return false;
+            }
+          }
+          if (this.check2) {
+            if (this.stone === '') {
+              console.log('die check2')
+              return false;
+            }
+          }
+          if (this.bar === '' || this.radio1 === '' || this.paint === '') {
+            console.log('die check3')
+            return false;
+          }
+          return true;
+        }
+      },
       clickConfirm () {
+        if (this.money === null || this.money === 0) {
+          this.$message.error('您还未输入投保金额!')
+          return
+        }
         this.clickClose();
+        web3.eth.getAccounts((err, accounts) => {
+          let account = accounts[0];
+          Application.contracts.Adoption.deployed().then((instance) => {
+            return instance.saveInsurancePart1(this.wall, this.floor, this.bar, this.paint, this.stone, this.radio1, account, {from: account})
+          }).then((result) => {
+            Application.contracts.Adoption.deployed().then((instance) => {
+              return instance.saveInsurancePart2(this.city,
+                this.money,
+                Number((this.money * this.getFee).toPrecision(9)), {from: account})
+            }).then((result) => {
+              this.$router.push('MyInsurance')
+            })
+          })
+        })
       }
     },
     watch: {
-      value6: function (newValue, oldValue) {
+      city: function (newValue, oldValue) {
         this.rainstormPoint = 0
         this.acidRainPoint = 0
         this.typhoonPoint = 0
         this.stormTidePoint = 0
         this.floodPoint = 0
         this.earthquakePoint = 0
-        this.value1 = ''
-        this.value2 = ''
-        this.value3 = ''
-        this.value4 = ''
-        this.value5 = ''
+        this.wall = ''
+        this.floor = ''
+        this.bar = ''
+        this.paint = ''
+        this.stone = ''
         this.radio1 = ''
         this.finalPoint = 100
         if (newValue === 'Beijing' || newValue === 'Liaoning' || newValue === 'Shandong' || newValue === 'Guangdong' || newValue === 'Guangxi' || newValue === 'Fujian' ||
@@ -216,7 +281,7 @@
         }
         this.finalPoint = this.finalPoint + this.floodPoint + this.typhoonPoint + this.rainstormPoint + this.earthquakePoint + this.stormTidePoint + this.acidRainPoint
       },
-      value1: function (newValue, oldValue) {
+      wall: function (newValue, oldValue) {
         if (newValue === '乳胶漆墙面') {
           this.finalPoint = this.finalPoint + 20
         } else if (newValue === '壁纸墙面') {
@@ -232,7 +297,7 @@
           this.finalPoint = this.finalPoint + 10
         }
       },
-      value2: function (newValue, oldValue) {
+      floor: function (newValue, oldValue) {
         if (newValue === '木地板') {
           this.finalPoint = this.finalPoint + 10
         } else if (newValue === '瓷砖') {
@@ -244,7 +309,7 @@
           this.finalPoint = this.finalPoint + 5
         }
       },
-      value3: function (newValue, oldValue) {
+      bar: function (newValue, oldValue) {
         if (newValue === '实木板') {
           this.finalPoint = this.finalPoint + 40
         } else if (newValue === '人造板') {
@@ -256,7 +321,7 @@
           this.finalPoint = this.finalPoint + 10
         }
       },
-      value4: function (newValue, oldValue) {
+      paint: function (newValue, oldValue) {
         if (newValue === '水性漆') {
           this.finalPoint = this.finalPoint - 20
         } else if (newValue === '油性漆') {
@@ -268,7 +333,7 @@
           this.finalPoint = this.finalPoint + 5
         }
       },
-      value5: function (newValue, oldValue) {
+      stone: function (newValue, oldValue) {
         if (newValue === '砖石') {
           this.finalPoint = this.finalPoint + 30
         }
@@ -317,12 +382,12 @@
         paintOptions: [{value: '水性漆'}, {value: '油性漆'}],
         materials: [{value: '砖石'}, {value: '钢筋混凝土'}],
         radioOptions: [{value: '家中备有灭火器等设备'}, {value: '楼道中备有灭火器等设备'}, {value: '未备有灭火器等设备'}],
-        value1: '',
-        value2: '',
-        value3: '',
-        value4: '',
-        value5: '',
-        value6: '',
+        wall: '',
+        floor: '',
+        bar: '',
+        paint: '',
+        stone: '',
+        city: '',
         radio1: '',
         check1: true,
         check2: true,
@@ -334,7 +399,8 @@
         earthquakePoint: 0,
         finalPoint: 100,
         showDialog: false,
-        startCount: false
+        startCount: false,
+        money: null,
       }
     }
   }
@@ -350,6 +416,7 @@
 
   .title
     margin 30px 0 15px 0
+    font-size 20px
 
   .dialog-demo
     .weui-dialog

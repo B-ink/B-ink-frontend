@@ -20,8 +20,12 @@ new Vue({
   el: '#app',
   router,
   created: function () {
-    Application.init();
+    try {
+      Application.init();
+    } catch (err) {
+      this.$message.error('请安装METAMASK插件，设置账户信息后刷新重试')
+    }
   },
-  components: { App },
+  components: {App},
   template: '<App/>'
 })

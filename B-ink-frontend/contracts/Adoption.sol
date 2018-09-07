@@ -1,7 +1,24 @@
 pragma solidity ^0.4.17;
 
 contract Adoption {
-    address[16] public adopters;
+    struct InsurancePart1 {
+        string wall;
+        string floor;
+        string bar;
+        string paint;
+        string stone;
+        string radio1;
+        address userAddress;
+        uint time;
+    }
+
+    struct InsurancePart2 {
+        string city;
+        uint money;
+        uint expense;
+        uint time;
+    }
+    
     struct UserStruct {
         address userAddress;
         string username;
@@ -14,21 +31,17 @@ contract Adoption {
         address userAddress;
         uint index;
     }
+   
 
-    address[] public userAddresses; 
+    address[] public userAddresses;
     string[] private usernames;
+    InsurancePart1[] public insurancePart1s;
+    InsurancePart2[] public insurancePart2s;
+    uint public insurancePart1Len;
+    uint public insurancePart2Len;
     mapping(address => UserStruct) private userStruct;
-
-    mapping(string => UserListStruct) private userListStruct; 
-    function adopt(uint petId) public returns (uint) {
-        require(petId>=0 && petId <= 15);
-        adopters[petId] = msg.sender;
-        return petId;
-    }
-
-    function login(string username, string password) public returns (bool) {
-        
-    }
+    mapping(address => uint[]) private insuranceMap;
+    mapping(string => UserListStruct) private userListStruct;
 
     function findUserAddressByUsername(string _username) public constant returns (address userAddress) {
         require(isExitUsername(_username));
@@ -59,7 +72,7 @@ contract Adoption {
             userStruct[_userAddress].password,
             userStruct[_userAddress].time,
             userStruct[_userAddress].index
-        ); 
+        );
     }
 
     function isExitUsername(string _username) public constant returns(bool) {
@@ -72,8 +85,19 @@ contract Adoption {
         return (userAddresses[userStruct[_userAddress].index] == _userAddress);
     }
 
-
-    function getAdopters() public view returns (address[16]) {
-        return adopters;
+    function saveInsurancePart1( string wall, string floor, string bar, string paint, string stone, string radio1, address userAddress)
+     public returns(bool){
+        insurancePart1s.push(InsurancePart1(wall, floor, bar, paint, stone, radio1, userAddress, now));
+        insurancePart1Len += 1;
+        return true;
     }
+
+    function saveInsurancePart2(string city,uint money, uint expense)
+     public returns(bool){
+        insurancePart2s.push(InsurancePart2(city,money, expense, now));
+        insurancePart2Len += 1;
+        return true;
+    }
+    
+
 }

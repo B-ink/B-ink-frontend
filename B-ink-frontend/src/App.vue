@@ -18,4 +18,10 @@ export default {
   color: #2c3e50;
   height: 100%;
 }
+.el-message-box__wrapper {
+  padding: 50% 20px 0 20px;
+}
+.el-message-box {
+  width: 100%;
+}
 </style>
