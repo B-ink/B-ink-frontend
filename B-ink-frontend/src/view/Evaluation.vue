@@ -1,7 +1,7 @@
 <template>
   <el-container direction="vertical" style="width: 100%; height: 100%">
     <div style="width: 100%">
-      <div id="risk-form" style="width: 100%; height:100%; background-image: url('./static/background.jpg');
+      <div id="risk-form" style="width: 100%; height:100%; background-image: url('../../static/background.jpg');
               background-position: center; background-repeat: no-repeat;  background-attachment:fixed; background-size: cover;">
         <swiper :options="swiperOption" style="height: 100%; width: 100%">
           <swiper-slide style="height: 100%;">
