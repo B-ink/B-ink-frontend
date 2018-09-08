@@ -29,9 +29,9 @@ export default {
 }
 
 .el-message-box__wrapper {
-  padding: 50% 20px 0 20px;
+  padding: 50% 20px 0 20px !important;
 }
 .el-message-box {
-  width: 100%;
+  width: 100% !important;
 }
 </style>
