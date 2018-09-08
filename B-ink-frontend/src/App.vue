@@ -18,6 +18,16 @@ export default {
   color: #2c3e50;
   height: 100%;
 }
+
+@font-face {
+  font-family: 'iconfont';  /* project id 828897 */
+  src: url('//at.alicdn.com/t/font_828897_8j574fzfqgr.eot');
+  src: url('//at.alicdn.com/t/font_828897_8j574fzfqgr.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_828897_8j574fzfqgr.woff') format('woff'),
+  url('//at.alicdn.com/t/font_828897_8j574fzfqgr.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_828897_8j574fzfqgr.svg#iconfont') format('svg');
+}
+
 .el-message-box__wrapper {
   padding: 50% 20px 0 20px;
 }
