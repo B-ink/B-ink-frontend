@@ -224,6 +224,7 @@
     background-color #f5f7f9
     padding 20px
     box-sizing border-box
+    min-height 100%
     .line
       margin 3px 0
       .label
