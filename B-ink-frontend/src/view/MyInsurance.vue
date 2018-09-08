@@ -1,22 +1,32 @@
 <template>
-  <div class='my-insurance'>
-    <div style="font-size: 30px; margin-bottom: 15px;">我的保单</div>
+  <div class='my-insurance' style="position: relative">
+    <div @click="goEvaluation"
+         style="position: absolute; top: 30px; left: 20px; color: black; font-weight: 500; text-shadow: 0 14px 24px rgba(50,48,58,.25);">
+      <i class="el-icon-back"></i>
+      去投保
+    </div>
+    <div style="font-size: 30px; margin-top: 60px; margin-bottom: 15px;">
+      我的保单
+    </div>
     <div v-for="(insurance, key) in insurances" :key="key"
-         style="background-color: #fff;padding: 20px; margin: 20px 0;">
-      <div>
-        <div v-if="insurance.city !== ''" class="line"><span class="label">城市  </span>{{getCity(insurance.city)}}</div>
-        <div v-if="insurance.wall !== ''" class="line"><span class="label">墙面</span>  {{insurance.wall}}</div>
-        <div v-if="insurance.floor !== ''" class="line"><span class="label">地板</span>  {{insurance.floor}}</div>
-        <div v-if="insurance.bar !== ''" class="line"><span class="label">板材</span>  {{insurance.bar}}</div>
-        <div v-if="insurance.paint !== ''" class="line"><span class="label">涂料</span>  {{insurance.paint}}</div>
-        <div v-if="insurance.stone !== ''" class="line"><span class="label">建筑材料</span>  {{insurance.stone}}</div>
-        <div v-if="insurance.radio1 !== ''" class="line"><span class="label">防火设施</span>  {{insurance.radio1}}</div>
-      </div>
-      <div>
-        <div class="line">投保时间: {{insurance.time}}</div>
-        <div class="line">保险额度: ￥{{Number(insurance.money)}}</div>
-        <div class="line">保险费: ￥{{Number(insurance.expense)}}</div>
-      </div>
+         style="position: relative;background-color: #fff;padding: 20px; margin: 20px 0; border-radius: 10px;">
+        <div style="border-bottom: 1px dashed rgba(7,17,27,0.1); padding-bottom: 10px;">
+          <div class="line"><span class="label">投保时间  </span> {{insurance.time}}</div>
+        </div>
+        <div style="padding: 10px 0 20px 0; border-bottom: 1px dashed rgba(7,17,27,0.1)">
+          <div v-if="insurance.city !== ''" class="line"><span class="label">城市  </span>{{getCity(insurance.city)}}</div>
+          <div v-if="insurance.wall !== ''" class="line"><span class="label">墙面</span> {{insurance.wall}}</div>
+          <div v-if="insurance.floor !== ''" class="line"><span class="label">地板</span> {{insurance.floor}}</div>
+          <div v-if="insurance.bar !== ''" class="line"><span class="label">板材</span> {{insurance.bar}}</div>
+          <div v-if="insurance.paint !== ''" class="line"><span class="label">涂料</span> {{insurance.paint}}</div>
+          <div v-if="insurance.stone !== ''" class="line"><span class="label">建筑材料</span> {{insurance.stone}}</div>
+          <div v-if="insurance.radio1 !== ''" class="line"><span class="label">防火设施</span> {{insurance.radio1}}</div>
+        </div>
+        <div style="text-align: right; padding-top: 20px;">
+          <div class="line"><span  style="display: inline-block; margin-right: 10px; color: #999">保险额度: ￥{{Number(insurance.money)}}    </span><span class="line">保险费: <span style="color: red">￥{{Number(insurance.expense)}}</span></span></div>
+        </div>
+      <i class="coupon-circle coupon-circle-left"></i>
+      <i class="coupon-circle coupon-circle-right"></i>
     </div>
     <div v-if="insurances.length === 0">您还没有保单</div>
   </div>
@@ -197,6 +207,9 @@
             return city.label;
           }
         }
+      },
+      goEvaluation () {
+        this.$router.push('Evaluation')
       }
     }
   }
@@ -207,9 +220,20 @@
     background-color #f5f7f9
     padding 20px
     box-sizing border-box
-    height: 100%
     .line
       margin 3px 0
       .label
         color: #999
+    .coupon-circle
+      display inline-block
+      position absolute
+      bottom 58px
+      width 20px
+      height 20px
+      background-color #f5f7f9
+      border-radius 50%
+    .coupon-circle-left
+      left -10px
+    .coupon-circle-right
+      right -10px
 </style>

@@ -1,35 +1,43 @@
 <template>
-  <el-container direction="vertical" style="height: 100%">
-    <el-container>
-      <div id="risk-form" style="width: 100%; height:100%">
+  <el-container direction="vertical" style="width: 100%; height: 100%">
+    <div style="width: 100%">
+      <div id="risk-form" style="width: 100%; height:100%; background-image: url('./static/background.jpg');
+              background-position: center; background-repeat: no-repeat;  background-attachment:fixed; background-size: cover;">
         <swiper :options="swiperOption" style="height: 100%; width: 100%">
           <swiper-slide style="height: 100%;">
-            <div style="width: 100%; text-align: center; margin-bottom: 60px;  padding-top: 220px">
-              <span style="font-size: 40px">B-ink</span>
-              <br>
-              <span style="font-size: 35px">房屋租赁保险平台</span>
+            <div style="position: relative;width: 100%; height: 100%; text-align: center; margin-bottom: 60px;
+            padding-top: 50%;">
+              <div @click="goMyInsurance"
+                   style="position: absolute; top: 30px; right: 20px; color: white; font-weight: 500; text-shadow: 0 14px 24px rgba(50,48,58,.25);">
+                我的保单
+                <i class="el-icon-back" style="transform: rotateY(180deg)"></i>
+              </div>
+              <div style="text-shadow: 0 14px 24px rgba(50,48,58,.25)">
+                <span style="font-size: 40px; color: white; font-weight: 700;">B-ink</span>
+                <br>
+                <span style="font-size: 35px; color: white; font-weight: 700;">房屋租赁保险平台</span>
+              </div>
+              <div style="text-align: center; margin-top: 30px">
+                <CitySelector @changeCity="getCity"></CitySelector>
+              </div>
+              <svg class="icon" aria-hidden="true" style="position: fixed; bottom: 0px; font-size: 40px; left: 45%;"
+                   id="moveIcon">
+                <use xlink:href="#icon-xiayi"></use>
+              </svg>
             </div>
-            <div style="text-align: center">
-              <span style="margin-right: 20px">房屋位置</span>
-              <CitySelector @changeCity="getCity"></CitySelector>
-            </div>
-            <svg class="icon" aria-hidden="true" style="position: fixed; bottom: 0px; font-size: 40px; left: 45%;"
-                 id="moveIcon">
-              <use xlink:href="#icon-xiayi"></use>
-            </svg>
           </swiper-slide>
           <swiper-slide style="height: 100%">
             <div style="padding: 20px">
               <el-form label-width="80px" label-position="left">
                 <div v-show="check1">
                   <div class="title">
-                    <svg class="icon" aria-hidden="true" style="font-size: 25px; margin-right: 5px">
+                    <svg class="icon" aria-hidden="true" style="fill: white; font-size: 25px; margin-right: 5px">
                       <use xlink:href="#icon-loushui"></use>
                     </svg>
                     浸水评估
                   </div>
                   <el-form-item label="墙面">
-                    <el-select v-model="wall" placeholder="请选择">
+                    <el-select v-model="wall" placeholder="请选择" size="medium">
                       <el-option
                         v-for="item in wallOptions"
                         :key="item.value"
@@ -39,7 +47,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="地板">
-                    <el-select v-model="floor" placeholder="请选择">
+                    <el-select v-model="floor" placeholder="请选择" size="medium">
                       <el-option
                         v-for="item in floorOptions"
                         :key="item.value"
@@ -51,13 +59,13 @@
                 </div>
                 <div v-show="check2">
                   <div class="title">
-                    <svg class="icon" aria-hidden="true" style="font-size: 25px; margin-right: 5px">
-                      <use xlink:href="#icon-dizhen"></use>
-                    </svg>
+                    <i class="iconfont" style="font-family: iconfont;font-size: 25px; margin-right: 5px">
+                      &#xe613;
+                    </i>
                     地震评估
                   </div>
                   <el-form-item label="建筑材料">
-                    <el-select v-model="stone" placeholder="请选择">
+                    <el-select v-model="stone" placeholder="请选择" size="medium">
                       <el-option
                         v-for="item in materials"
                         :key="item.value"
@@ -69,13 +77,13 @@
                 </div>
                 <div>
                   <div class="title">
-                    <svg class="icon" aria-hidden="true" style="font-size: 25px; margin-right: 5px">
+                    <svg class="icon" aria-hidden="true" style="fill: white; font-size: 25px; margin-right: 5px">
                       <use xlink:href="#icon-huozai"></use>
                     </svg>
                     火灾评估
                   </div>
                   <el-form-item label="板材">
-                    <el-select v-model="bar" placeholder="请选择">
+                    <el-select v-model="bar" placeholder="请选择" size="medium">
                       <el-option
                         v-for="item in panelOptions"
                         :key="item.value"
@@ -85,7 +93,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="涂料">
-                    <el-select v-model="paint" placeholder="请选择">
+                    <el-select v-model="paint" placeholder="请选择" size="medium">
                       <el-option
                         v-for="item in paintOptions"
                         :key="item.value"
@@ -106,8 +114,8 @@
                     </el-radio-group>
                   </el-form-item>
                 </div>
-                <el-form-item style="position: absolute; top: 64%; width: 100%; right: 10px">
-                  <el-button type="primary" style="position:absolute;right:5%" @click="startEvaluation">开始评估</el-button>
+                <el-form-item style="position: absolute; bottom: 40%; width: 100%; right: 10px">
+                  <el-button type="plain" style="position:absolute;right:5%" @click="startEvaluation">开始评估</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -115,19 +123,18 @@
         </swiper>
       </div>
       <x-dialog :show.sync="showDialog" class="dialog-demo" style="padding: 10px; height: 100%;">
-        <div class="img-box" style="font-size: 48px; height: 80px; color: #409EFF;">
-          {{this.finalPoint}}
-          <!--<Countup :start-val="0" :end-val="this.finalPoint" :duration="10" :start="startCount"></Countup>-->
-        </div>
-        <div style="padding: 0 20px; margin-bottom: 20px">
+        <div style="padding: 0 20px; margin: 20px 0">
+          <div class="img-box" style="font-size: 48px; height: 80px; color: #409EFF;">
+            {{this.finalPoint}}
+          </div>
           <el-input type="number" placeholder="请输入保险金额" style="margin-bottom: 10px" v-model="money"></el-input>
           <div>{{`您的费率是${getFee * 100}%`}}</div>
-          <div>{{`保险费是${Number((this.money * getFee).toPrecision(9))}元`}}</div>
+          <div style="margin-bottom: 15px">{{`保险费是${Number((this.money * getFee).toPrecision(9))}元`}}</div>
+          <el-button @click="clickClose">我再想想</el-button>
+          <el-button @click="clickConfirm" type="primary" v-if="this.finalPoint <= 400">我要投保</el-button>
         </div>
-        <el-button @click="clickClose">我再想想</el-button>
-        <el-button @click="clickConfirm" type="primary" v-if="this.finalPoint <= 400">我要投保</el-button>
       </x-dialog>
-    </el-container>
+    </div>
   </el-container>
 </template>
 
@@ -169,6 +176,9 @@
       }
     },
     methods: {
+      goMyInsurance () {
+        this.$router.push('MyInsurance')
+      },
       getCity (msg) {
         this.city = msg
       },
@@ -409,29 +419,41 @@
 <style lang="stylus">
   @import "~vux/src/styles/close"
   #risk-form
-    margin 10px
+    .el-form-item
+      margin-bottom 10px
 
-  .el-form-item
-    margin-bottom 10px
+    .el-input__inner
+      box-shadow: 0 14px 24px rgba(50, 48, 58, .25) !important
 
-  .title
-    margin 30px 0 15px 0
-    font-size 20px
+    .el-form-item__label
+      color: white
+      font-size 16px
+      text-shadow: 0 14px 24px rgba(50, 48, 58, .25)
 
-  .dialog-demo
-    .weui-dialog
-      border-radius: 8px
-      padding: 30px 0
-    .dialog-title
-      //line-height: 30px
-      //color: #666
-    .img-box
-      height: 80%
-      overflow: hidden
-      font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif
-      font-size: 5em
-      color: #409EFF
-    .vux-close
-      margin-top: 2px
-      margin-bottom: 2px
+    .el-radio__label
+      color: white
+      text-shadow: 0 14px 24px rgba(50, 48, 58, .25)
+
+    .title
+      margin 30px 0 15px 0
+      font-size 20px
+      color white
+      font-weight 500
+      text-shadow: 0 14px 24px rgba(50, 48, 58, .25)
+
+    .dialog-demo
+      .weui-dialog
+        border-radius: 8px
+      .dialog-title
+        //line-height: 30px
+        //color: #666
+      .img-box
+        height: 80%
+        overflow: hidden
+        font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif
+        font-size: 5em
+        color: #409EFF
+      .vux-close
+        margin-top: 2px
+        margin-bottom: 2px
 </style>
